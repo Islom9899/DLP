@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app.constants import (
+from app.app_settings import (
     DRAIN_ACTION_TEXT,
     EXPOSURE_MAX,
     EXPOSURE_MIN,
@@ -29,11 +29,11 @@ from app.constants import (
     TOTAL_SEQUENCES,
     px,
 )
-from app.models import RecipeData, ReagentSlot, StepItem
-from app.recipe_io import recipe_from_dict, recipe_to_dict
-from app.utils import is_phosphoramidite_group_action, parse_reagent_slot
-from app.widgets.primitives import Panel
-from app.widgets.reagent_widgets import (
+from app.data_models import RecipeData, ReagentSlot, StepItem
+from app.recipe_file_manager import recipe_from_dict, recipe_to_dict
+from app.command_helpers import is_phosphoramidite_group_action, parse_reagent_slot
+from app.widgets.common_ui import Panel
+from app.widgets.reagent_controls import (
     PatternBaseCard,
     PhosphoramiditeGroupCard,
     ProtocolTable,

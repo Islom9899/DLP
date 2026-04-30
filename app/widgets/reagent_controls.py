@@ -24,7 +24,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app.constants import (
+from app.app_settings import (
     DRAIN_ACTION_TEXT,
     DLP_TIME_MARKER,
     EXPOSURE_MAX,
@@ -34,8 +34,8 @@ from app.constants import (
     PHOSPHORAMIDITE_GROUP_ACTION_TEXT,
     px,
 )
-from app.models import StepItem
-from app.utils import (
+from app.data_models import StepItem
+from app.command_helpers import (
     CommandGenerator,
     format_reagent_action,
     is_pattern_action,

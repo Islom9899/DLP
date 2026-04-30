@@ -7,11 +7,11 @@ import time
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
-from app.qt_environment import configure_qt_environment
+from app.qt_display_setup import configure_qt_environment
 
 configure_qt_environment()
 
-from PySide6.QtCore import Qt, QTimer, Signal
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QDialog,
@@ -30,7 +30,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app.constants import (
+from app.app_settings import (
     BASES,
     DLP_TIME_MARKER,
     INFINITE_TIME_MARKER,
@@ -39,19 +39,24 @@ from app.constants import (
     TOTAL_SEQUENCES,
     px,
 )
-from app.models import RecipeData, ReagentSlot, StepItem
-from app.recipe_io import default_reagent_slots, default_recipe
-from app.utils import (
+from app.hardware import HardwareManager
+from app.hardware.device_manager import DEFAULT_DCS_IP, DEFAULT_DCS_PORT
+from app.data_models import RecipeData, ReagentSlot, StepItem
+from app.recipe_file_manager import default_reagent_slots, default_recipe
+from app.command_helpers import (
     CommandGenerator,
     is_incubation_action,
     is_pattern_action,
     is_phosphoramidite_group_action,
 )
-from app.widgets.base_widgets import BaseChip, BigBaseCircle, CircleProgress
-from app.widgets.primitives import ControlButton, EventLine, MiniMetricBox, Panel
-from app.widgets.sequence_row import SequenceRow
-from pages.dlp_dialog import DlpDialog
-from pages.recipe_dialog import RecipeSetupDialog
+from app.widgets.base_display_widgets import BaseChip, BigBaseCircle, CircleProgress
+from app.widgets.common_ui import ControlButton, EventLine, MiniMetricBox, Panel
+from app.widgets.sequence_status_row import SequenceRow
+from pages.dlp_test_window import DlpDialog
+from pages.recipe_setup_window import RecipeSetupDialog
+
+SOURCE_MASK_EXTENSION = ".png"
+DLP_MASK_EXTENSION = ".bmp"
 
 
 class MainWindow(QMainWindow):
@@ -94,6 +99,16 @@ class MainWindow(QMainWindow):
         self.base_chips: Dict[str, BaseChip] = {}
         self.dlp_controls: List[QWidget] = []
 
+        self._hw = HardwareManager(self)
+        self._hw.dcs_connected.connect(self._on_dcs_connected)
+        self._hw.dlp_connected.connect(self._on_dlp_connected)
+        self._hw.dlp_upload_done.connect(self._on_dlp_upload_done)
+
+        self._dcs_status_label: Optional[QLabel] = None
+        self._dlp_status_label: Optional[QLabel] = None
+        self._dlp_retry_btn: Optional[QPushButton] = None
+        self._dcs_retry_btn: Optional[QPushButton] = None
+
         self.step_timer = QTimer(self)
         self.step_timer.setSingleShot(True)
         self.step_timer.timeout.connect(self._on_step_timeout)
@@ -118,6 +133,7 @@ class MainWindow(QMainWindow):
         self._build_ui()
         self._reset_visual_state()
         self._seed_sequence_overview_preview()
+        self._auto_connect_hardware()
 
     def _build_ui(self) -> None:
         central = QWidget()
@@ -354,14 +370,59 @@ class MainWindow(QMainWindow):
         panel = Panel("DLP OPTICAL SYSTEM SETTINGS")
         panel.setMinimumHeight(px(320))
 
-        panel.root.addStretch(1)
+        _section_style = f"font-size:{px(11)}px; font-weight:800; color:#3a6080; letter-spacing:1px;"
+        _retry_btn_style = f"""
+            QPushButton {{
+                min-height:{px(24)}px; padding:0 {px(10)}px;
+                border-radius:{px(6)}px; border:1px solid #93c5fd;
+                background:#eff6ff; color:#1e40af;
+                font-size:{px(11)}px; font-weight:700;
+            }}
+            QPushButton:hover {{ background:#dbeafe; }}
+            QPushButton:disabled {{ background:#e8eef4; color:#90a8bc; border-color:#c0d0de; }}
+        """
+
+        def _hw_row(status_text: str) -> tuple:
+            row = QHBoxLayout()
+            status = QLabel(status_text)
+            status.setStyleSheet(f"font-size:{px(11)}px; font-weight:700; color:#b07020;")
+            btn = QPushButton("Retry")
+            btn.setStyleSheet(_retry_btn_style)
+            btn.setFixedWidth(px(58))
+            row.addWidget(status, 1)
+            row.addWidget(btn)
+            return row, status, btn
+
+        # ── DCS connection ────────────────────────────────────────
+        dcs_title = QLabel("DCS CONTROLLER")
+        dcs_title.setStyleSheet(_section_style)
+        panel.root.addWidget(dcs_title)
+
+        dcs_row, self._dcs_status_label, self._dcs_retry_btn = _hw_row("● Connecting...")
+        self._dcs_retry_btn.clicked.connect(self._on_dcs_retry_clicked)
+        panel.root.addLayout(dcs_row)
+
+        panel.root.addSpacing(px(8))
+
+        # ── DLP connection ────────────────────────────────────────
+        dlp_title = QLabel("DLP PROJECTOR")
+        dlp_title.setStyleSheet(_section_style)
+        panel.root.addWidget(dlp_title)
+
+        dlp_row, self._dlp_status_label, self._dlp_retry_btn = _hw_row("● Connecting...")
+        self._dlp_retry_btn.clicked.connect(self._on_dlp_retry_clicked)
+        panel.root.addLayout(dlp_row)
+
+        panel.root.addSpacing(px(8))
+
+        # ── LED Power slider ──────────────────────────────────────
         led_block, self.led_slider, self.led_value_label = self._build_slider_block(
             "LED POWER",
             "percent",
             LED_MIN,
             LED_MAX,
-            85,
-            lambda _: None,
+            0,
+            self._on_led_slider_changed,
         )
         panel.root.addLayout(led_block)
         panel.root.addStretch(1)
@@ -597,7 +658,9 @@ class MainWindow(QMainWindow):
         if not self.pattern_folder_path:
             self.pattern_label.setText("Pattern folder not loaded")
             return
-        self.pattern_label.setText(f"Pattern: Pos{self.current_sequence}_{self.current_base}.png")
+        self.pattern_label.setText(
+            f"Pattern: {self._pattern_file_name(self.current_sequence, self.current_base)}"
+        )
 
     def _on_base_chip_clicked(self, base: str) -> None:
         if self.is_running:
@@ -691,14 +754,43 @@ class MainWindow(QMainWindow):
         self.pattern_folder_path = path
         self.pattern_folder_edit.setText(path)
         self._update_pattern_label()
+        self._convert_pattern_folder_to_bmp(path)
         self._log_pattern_folder_status()
+
+    def _pattern_file_name(self, sequence_no: int, base: str) -> str:
+        return f"Pos{sequence_no}_{base}{DLP_MASK_EXTENSION}"
 
     def _expected_pattern_names(self) -> List[str]:
         return [
-            f"Pos{sequence_no}_{base}.png"
+            self._pattern_file_name(sequence_no, base)
             for sequence_no in range(1, TOTAL_SEQUENCES + 1)
             for base in BASES
         ]
+
+    def _convert_pattern_folder_to_bmp(self, path: str) -> None:
+        self.add_event_line(f"Converting {SOURCE_MASK_EXTENSION} masks to {DLP_MASK_EXTENSION} ...")
+        result = self._hw.convert_png_patterns_to_bmp(
+            folder=path,
+            sequences=list(range(1, TOTAL_SEQUENCES + 1)),
+            bases=list(BASES),
+        )
+
+        converted = int(result.get("converted", 0))
+        skipped = int(result.get("skipped", 0))
+        missing_png = list(result.get("missing_png", []))
+        failed = list(result.get("failed", []))
+
+        self.add_event_line(
+            f"PNG to BMP conversion complete: {converted} converted, {skipped} already ready"
+        )
+        if missing_png:
+            preview = ", ".join(missing_png[:8])
+            suffix = f" ... +{len(missing_png) - 8} more" if len(missing_png) > 8 else ""
+            self.add_event_line(f"ALERT Missing source PNG files: {preview}{suffix}")
+        if failed:
+            preview = ", ".join(failed[:8])
+            suffix = f" ... +{len(failed) - 8} more" if len(failed) > 8 else ""
+            self.add_event_line(f"ALERT PNG to BMP conversion failed: {preview}{suffix}")
 
     def _missing_pattern_names(self) -> List[str]:
         if not self.pattern_folder_path:
@@ -717,14 +809,82 @@ class MainWindow(QMainWindow):
         expected_count = TOTAL_SEQUENCES * len(BASES)
         missing = self._missing_pattern_names()
         found_count = expected_count - len(missing)
-        self.add_event_line(f"Pattern folder check: {found_count}/{expected_count} files found")
+        self.add_event_line(
+            f"Pattern folder check: {found_count}/{expected_count} BMP files found"
+        )
         if missing:
             preview = ", ".join(missing[:8])
             suffix = f" ... +{len(missing) - 8} more" if len(missing) > 8 else ""
             self.add_event_line(f"ALERT Missing pattern files: {preview}{suffix}")
 
+    # ── Hardware event handlers ──────────────────────────────────────────────
+
+    def _auto_connect_hardware(self) -> None:
+        self._hw.connect_dcs_async(DEFAULT_DCS_IP, DEFAULT_DCS_PORT)
+        self._hw.connect_dlp_async()
+
+    def _on_led_slider_changed(self, value: int) -> None:
+        self._hw.set_led_percent(float(value))
+
+    def _on_dcs_retry_clicked(self) -> None:
+        self._dcs_retry_btn.setEnabled(False)
+        self._dcs_status_label.setText("● Connecting...")
+        self._dcs_status_label.setStyleSheet(
+            f"font-size:{px(11)}px; font-weight:700; color:#b07020;"
+        )
+        self.add_event_line(f"DCS reconnecting → {DEFAULT_DCS_IP}:{DEFAULT_DCS_PORT} ...")
+        self._hw.connect_dcs_async(DEFAULT_DCS_IP, DEFAULT_DCS_PORT)
+
+    def _on_dcs_connected(self, success: bool, message: str) -> None:
+        if success:
+            self._dcs_status_label.setText("● Connected")
+            self._dcs_status_label.setStyleSheet(
+                f"font-size:{px(11)}px; font-weight:700; color:#27ae60;"
+            )
+            self._dcs_retry_btn.setEnabled(False)
+            self._on_led_slider_changed(self.led_slider.value())
+        else:
+            self._dcs_status_label.setText("● Not found")
+            self._dcs_status_label.setStyleSheet(
+                f"font-size:{px(11)}px; font-weight:700; color:#c0392b;"
+            )
+            self._dcs_retry_btn.setEnabled(True)
+        self.add_event_line(message)
+
+    def _on_dlp_retry_clicked(self) -> None:
+        self._dlp_retry_btn.setEnabled(False)
+        self._dlp_status_label.setText("● Connecting...")
+        self._dlp_status_label.setStyleSheet(
+            f"font-size:{px(11)}px; font-weight:700; color:#b07020;"
+        )
+        self.add_event_line("DLP USB reconnecting ...")
+        self._hw.connect_dlp_async()
+
+    def _on_dlp_connected(self, success: bool, message: str) -> None:
+        if success:
+            self._dlp_status_label.setText("● Connected")
+            self._dlp_status_label.setStyleSheet(
+                f"font-size:{px(11)}px; font-weight:700; color:#27ae60;"
+            )
+            self._dlp_retry_btn.setEnabled(False)
+        else:
+            self._dlp_status_label.setText("● Not found")
+            self._dlp_status_label.setStyleSheet(
+                f"font-size:{px(11)}px; font-weight:700; color:#c0392b;"
+            )
+            self._dlp_retry_btn.setEnabled(True)
+        self.add_event_line(message)
+
+    def _on_dlp_upload_done(self, success: bool, message: str) -> None:
+        self.add_event_line(f"DLP upload: {message}")
+        if success:
+            self._execute_next_step()
+        else:
+            self.add_event_line("ALERT DLP upload failed — synthesis aborted")
+            self.stop_process()
+
     def open_dlp_dialog(self) -> None:
-        dialog = DlpDialog(self)
+        dialog = DlpDialog(hw=self._hw, parent=self)
         dialog.exec()
 
     def open_recipe_setup_dialog(self) -> None:
@@ -802,7 +962,18 @@ class MainWindow(QMainWindow):
         self.blink_timer.start()
         self.add_event_line(">>> SYNTHESIS STARTED")
         self._update_progress_text_running()
-        self._execute_next_step()
+
+        if self._hw.dlp_is_connected and self.pattern_folder_path:
+            self.add_event_line("DLP upload starting (all patterns)...")
+            self._hw.upload_all_patterns_async(
+                folder=self.pattern_folder_path,
+                sequences=list(range(1, TOTAL_SEQUENCES + 1)),
+                bases=list(BASES),
+                base_times_ms=self.recipe.pattern_base_times,
+                file_extension=DLP_MASK_EXTENSION,
+            )
+        else:
+            self._execute_next_step()
 
     def pause_process(self) -> None:
         if not self.is_running:
@@ -837,6 +1008,7 @@ class MainWindow(QMainWindow):
 
         self.is_running = False
         self.hold_infinite = False
+        self._hw.stop_dlp_sequence()
         self.step_timer.stop()
         self.metrics_timer.stop()
         self.progress_timer.stop()
@@ -864,6 +1036,7 @@ class MainWindow(QMainWindow):
     def _finish_process(self) -> None:
         self.is_running = False
         self.hold_infinite = False
+        self._hw.stop_dlp_sequence()
         self.step_timer.stop()
         self.metrics_timer.stop()
         self.progress_timer.stop()
@@ -976,7 +1149,7 @@ class MainWindow(QMainWindow):
         self._update_pattern_label()
 
         if stage_no == 2 and is_pattern_action(step.action):
-            pattern_name = f"Pos{self.current_sequence}_{self.current_base}.png"
+            pattern_name = self._pattern_file_name(self.current_sequence, self.current_base)
             if self.pattern_folder_path:
                 file_path = os.path.join(self.pattern_folder_path, pattern_name)
                 if not os.path.exists(file_path):
@@ -1164,6 +1337,11 @@ class MainWindow(QMainWindow):
         self.hold_infinite = False
         self.step_timer.stop()
         self.metrics_timer.stop()
+        self._hw.stop_camera_preview()
+        self._hw.disconnect_camera()
+        self._hw.stop_dlp_sequence()
+        self._hw.disconnect_dcs()
+        self._hw.disconnect_dlp()
         if self.log_dirty and self.event_log_lines:
             self._prompt_save_log()
         event.accept()

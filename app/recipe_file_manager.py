@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Dict, List, Tuple
 
-from app.constants import (
+from app.app_settings import (
     DRAIN_ACTION_TEXT,
     DLP_TIME_MARKER,
     INCUBATION_ACTION_TEXT,
@@ -12,8 +12,8 @@ from app.constants import (
     PHOSPHORAMIDITE_GROUP_ACTION_TEXT,
     TOTAL_SEQUENCES,
 )
-from app.models import RecipeData, ReagentSlot, StepItem
-from app.utils import format_reagent_action
+from app.data_models import RecipeData, ReagentSlot, StepItem
+from app.command_helpers import format_reagent_action
 
 
 def default_reagent_slots() -> Dict[int, ReagentSlot]:

@@ -7,10 +7,10 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QWidget
 
-from app.utils import resource_path
+from app.command_helpers import resource_path
 
-from app.constants import BASES, px
-from app.widgets.base_widgets import BaseDot
+from app.app_settings import BASES, px
+from app.widgets.base_display_widgets import BaseDot
 
 
 class SequenceRow(QFrame):

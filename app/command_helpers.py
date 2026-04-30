@@ -13,14 +13,14 @@ def resource_path(relative: str) -> str:
     base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return os.path.join(base, relative)
 
-from app.constants import (
+from app.app_settings import (
     DRAIN_ACTION_TEXT,
     DLP_TIME_MARKER,
     INCUBATION_ACTION_TEXT,
     PATTERN_ACTION_TEXT,
     PHOSPHORAMIDITE_GROUP_ACTION_TEXT,
 )
-from app.models import StepItem
+from app.data_models import StepItem
 
 
 def format_reagent_action(slot_no: int, name: str) -> str:

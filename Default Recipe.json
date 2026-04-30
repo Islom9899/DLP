@@ -1,0 +1,163 @@
+{
+  "name": "Default Recipe",
+  "memo": "",
+  "sequence_count": 20,
+  "reagents": [
+    {
+      "slot_no": 1,
+      "name": "Phosphoramidite (A)",
+      "color": "#2f77bc",
+      "volume": null
+    },
+    {
+      "slot_no": 2,
+      "name": "Phosphoramidite (T)",
+      "color": "#c54f4f",
+      "volume": null
+    },
+    {
+      "slot_no": 3,
+      "name": "Phosphoramidite (C)",
+      "color": "#3f9b67",
+      "volume": null
+    },
+    {
+      "slot_no": 4,
+      "name": "Phosphoramidite (G)",
+      "color": "#7f56c1",
+      "volume": null
+    },
+    {
+      "slot_no": 5,
+      "name": "Activator",
+      "color": "#1f7cbc",
+      "volume": null
+    },
+    {
+      "slot_no": 6,
+      "name": "Oxidizer",
+      "color": "#7c57c4",
+      "volume": null
+    },
+    {
+      "slot_no": 7,
+      "name": "Capping A",
+      "color": "#4a9f71",
+      "volume": null
+    },
+    {
+      "slot_no": 8,
+      "name": "Capping B",
+      "color": "#7c57c4",
+      "volume": null
+    },
+    {
+      "slot_no": 9,
+      "name": "Deblock",
+      "color": "#1a8a9b",
+      "volume": null
+    },
+    {
+      "slot_no": 10,
+      "name": "Wash 1",
+      "color": "#667a92",
+      "volume": null
+    },
+    {
+      "slot_no": 11,
+      "name": "Wash 2",
+      "color": "#667a92",
+      "volume": null
+    },
+    {
+      "slot_no": 12,
+      "name": "Wash 3",
+      "color": "#667a92",
+      "volume": null
+    }
+  ],
+  "pre_processing": [
+    {
+      "step_no": 1,
+      "action": "Phosphoramidite(A,T,C,G)",
+      "time_sec": "1",
+      "command": ""
+    },
+    {
+      "step_no": 2,
+      "action": "Incubation",
+      "time_sec": "1",
+      "command": ""
+    }
+  ],
+  "cyclic_reaction": [
+    {
+      "step_no": 1,
+      "action": "Phosphoramidite(A,T,C,G)",
+      "time_sec": "1",
+      "command": ""
+    },
+    {
+      "step_no": 2,
+      "action": "Reagent 05 - Activator",
+      "time_sec": "1",
+      "command": ""
+    },
+    {
+      "step_no": 3,
+      "action": "drain",
+      "time_sec": "1",
+      "command": ""
+    },
+    {
+      "step_no": 4,
+      "action": "Reagent 06 - Oxidizer",
+      "time_sec": "1",
+      "command": ""
+    },
+    {
+      "step_no": 5,
+      "action": "Pattern base (A,T,C,G)",
+      "time_sec": "DLP",
+      "command": ""
+    },
+    {
+      "step_no": 6,
+      "action": "drain",
+      "time_sec": "1",
+      "command": ""
+    },
+    {
+      "step_no": 7,
+      "action": "Reagent 09 - Deblock",
+      "time_sec": "1",
+      "command": ""
+    },
+    {
+      "step_no": 8,
+      "action": "Reagent 10 - Wash 1",
+      "time_sec": "1",
+      "command": ""
+    }
+  ],
+  "post_processing": [
+    {
+      "step_no": 1,
+      "action": "Phosphoramidite(A,T,C,G)",
+      "time_sec": "1",
+      "command": ""
+    },
+    {
+      "step_no": 2,
+      "action": "Incubation",
+      "time_sec": "1",
+      "command": ""
+    }
+  ],
+  "pattern_base_times": {
+    "A": 500,
+    "T": 500,
+    "C": 500,
+    "G": 500
+  }
+}

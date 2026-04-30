@@ -7,7 +7,7 @@ from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QPainter, QPen
 from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QWidget
 
-from app.constants import px
+from app.app_settings import px
 
 
 class BaseDot(QLabel):

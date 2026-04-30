@@ -4,7 +4,7 @@ from __future__ import annotations
 import os
 import sys
 
-from app.qt_environment import configure_qt_environment
+from app.qt_display_setup import configure_qt_environment
 
 if os.environ.get("QT_QPA_PLATFORM", "").lower() == "offscreen":
     os.environ.pop("QT_QPA_PLATFORM", None)
@@ -13,8 +13,8 @@ configure_qt_environment()
 
 from PySide6.QtWidgets import QApplication
 
-import app.constants as widgets_module  # alias: widgets_module._SCALE = scale ishlaydi
-from pages.main_window import MainWindow
+import app.app_settings as app_settings
+from pages.main_app_window import MainWindow
 
 
 def main() -> int:
@@ -22,7 +22,7 @@ def main() -> int:
 
     geometry = app.primaryScreen().availableGeometry()
     scale = min(geometry.width() / 1920.0, geometry.height() / 1080.0)
-    widgets_module._SCALE = scale
+    app_settings._SCALE = scale
 
     app.setStyle("Fusion")
     window = MainWindow()

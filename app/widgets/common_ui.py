@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app.constants import px
+from app.app_settings import px
 
 
 class Panel(QFrame):

@@ -1,5 +1,5 @@
 """Re-export all widget symbols for convenient imports."""
-from app.constants import (
+from app.app_settings import (
     BASES,
     DRAIN_ACTION_TEXT,
     DLP_TIME_MARKER,
@@ -15,8 +15,8 @@ from app.constants import (
     _SCALE,
     px,
 )
-from app.models import RecipeData, ReagentSlot, StepItem
-from app.utils import (
+from app.data_models import RecipeData, ReagentSlot, StepItem
+from app.command_helpers import (
     CommandGenerator,
     format_reagent_action,
     is_drain_action,
@@ -25,10 +25,10 @@ from app.utils import (
     is_phosphoramidite_group_action,
     parse_reagent_slot,
 )
-from app.widgets.primitives import ControlButton, EventLine, MiniMetricBox, Panel
-from app.widgets.base_widgets import BaseChip, BigBaseCircle, CircleProgress
-from app.widgets.sequence_row import SequenceRow
-from app.widgets.reagent_widgets import (
+from app.widgets.common_ui import ControlButton, EventLine, MiniMetricBox, Panel
+from app.widgets.base_display_widgets import BaseChip, BigBaseCircle, CircleProgress
+from app.widgets.sequence_status_row import SequenceRow
+from app.widgets.reagent_controls import (
     PhosphoramiditeGroupCard,
     ProtocolTable,
     ReagentCard,
