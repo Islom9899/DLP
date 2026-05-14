@@ -9,6 +9,7 @@ import re
 import socket
 import subprocess
 import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -184,6 +185,43 @@ class DCSController:
         self._connected = False
         logger.error("DCS connection failed: %s", " | ".join(errors))
         return False
+
+    @staticmethod
+    def scan_subnet(timeout_s: float = 0.5) -> List[str]:
+        """Scan local subnets for DCS controllers. Returns list of found IPs."""
+        local_ips = DCSController._local_ipv4_addresses()
+        candidates: List[str] = []
+        for local_ip in local_ips:
+            parts = local_ip.rsplit(".", 1)
+            if len(parts) == 2:
+                prefix = parts[0]
+                candidates.extend(f"{prefix}.{i}" for i in range(1, 255))
+
+        candidates = list(dict.fromkeys(candidates))  # deduplicate
+
+        found: List[str] = []
+
+        def _probe(ip: str) -> Optional[str]:
+            try:
+                conn = http.client.HTTPConnection(ip, 80, timeout=timeout_s)
+                conn.request("GET", "/channels", headers={"Accept": "application/json"})
+                resp = conn.getresponse()
+                body = resp.read().decode("utf-8", errors="replace")
+                conn.close()
+                if resp.status == 200 and DCSController._is_channels_payload(json.loads(body)):
+                    return ip
+            except Exception:
+                pass
+            return None
+
+        with ThreadPoolExecutor(max_workers=64) as pool:
+            futures = {pool.submit(_probe, ip): ip for ip in candidates}
+            for future in as_completed(futures):
+                result = future.result()
+                if result:
+                    found.append(result)
+
+        return sorted(found)
 
     def disconnect(self) -> None:
         self._connected = False

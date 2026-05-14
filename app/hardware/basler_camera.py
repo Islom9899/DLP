@@ -81,6 +81,7 @@ class BaslerCameraController:
         if self._import_error:
             return None
         try:
+            self._ensure_pypylon_dll_path()
             from pypylon import genicam, pylon  # type: ignore
         except Exception as exc:
             self._import_error = f"pypylon unavailable: {exc}"
@@ -88,6 +89,38 @@ class BaslerCameraController:
         self._pylon = pylon
         self._genicam = genicam
         return pylon
+
+    @staticmethod
+    def _ensure_pypylon_dll_path() -> None:
+        """Add the pypylon package directory to the Windows DLL search path.
+
+        Python 3.8+ no longer includes the extension module's own directory in
+        the DLL search path, so _pylon.pyd cannot find PylonBase_v11.dll etc.
+        when running from a PyInstaller bundle on a machine without Pylon SDK.
+        """
+        import os
+        import sys
+        if os.name != "nt" or not hasattr(os, "add_dll_directory"):
+            return
+        candidates = []
+        # PyInstaller bundle: _internal/pypylon or _MEIPASS/pypylon
+        meipass = getattr(sys, "_MEIPASS", None)
+        if meipass:
+            candidates.append(os.path.join(meipass, "pypylon"))
+        # Normal Python install: find the pypylon package directory
+        try:
+            import importlib.util
+            spec = importlib.util.find_spec("pypylon")
+            if spec and spec.submodule_search_locations:
+                candidates.extend(spec.submodule_search_locations)
+        except Exception:
+            pass
+        for path in candidates:
+            if os.path.isdir(path):
+                try:
+                    os.add_dll_directory(path)
+                except OSError:
+                    pass
 
     @staticmethod
     def _safe_call(obj, method: str, default: str = ""):

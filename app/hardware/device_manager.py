@@ -158,6 +158,14 @@ class HardwareManager(QObject):
 
         threading.Thread(target=_run, daemon=True).start()
 
+    def scan_dcs_async(self) -> None:
+        def _run():
+            found = DCSController.scan_subnet()
+            ip = found[0] if found else ""
+            self.dcs_connected.emit(False, f"SCAN_RESULT:{ip}")
+
+        threading.Thread(target=_run, daemon=True).start()
+
     def disconnect_dcs(self) -> None:
         with self._lock:
             if self._dcs:

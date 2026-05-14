@@ -110,6 +110,8 @@ class MainWindow(QMainWindow):
         self._hw.arduino_command_done.connect(self._on_arduino_command_done)
 
         self._dcs_status_label: Optional[QLabel] = None
+        self._dcs_ip_edit: Optional[QLineEdit] = None
+        self._dcs_scan_btn: Optional[QPushButton] = None
         self._dlp_status_label: Optional[QLabel] = None
         self._dlp_retry_btn: Optional[QPushButton] = None
         self._dcs_retry_btn: Optional[QPushButton] = None
@@ -410,6 +412,24 @@ class MainWindow(QMainWindow):
         dcs_title = QLabel("DCS CONTROLLER")
         dcs_title.setStyleSheet(_section_style)
         panel.root.addWidget(dcs_title)
+
+        ip_row = QHBoxLayout()
+        self._dcs_ip_edit = QLineEdit(DEFAULT_DCS_IP)
+        self._dcs_ip_edit.setPlaceholderText("IP address (e.g. 192.168.0.1)")
+        self._dcs_ip_edit.setStyleSheet(
+            f"QLineEdit {{ min-height:{px(22)}px; border:1px solid #b8cfdf;"
+            f"border-radius:{px(4)}px; padding:0 {px(6)}px;"
+            f"font-size:{px(11)}px; color:#1a2838; background:#f5f9fc; }}"
+            f"QLineEdit:focus {{ border:1px solid #2878c8; background:#ffffff; }}"
+        )
+        self._dcs_scan_btn = QPushButton("Scan")
+        self._dcs_scan_btn.setFixedWidth(px(48))
+        self._dcs_scan_btn.setStyleSheet(_retry_btn_style)
+        self._dcs_scan_btn.setToolTip("Scan local network for DCS controller")
+        self._dcs_scan_btn.clicked.connect(self._on_dcs_scan_clicked)
+        ip_row.addWidget(self._dcs_ip_edit, 1)
+        ip_row.addWidget(self._dcs_scan_btn)
+        panel.root.addLayout(ip_row)
 
         dcs_row, self._dcs_status_label, self._dcs_retry_btn = _hw_row("● Connecting...")
         self._dcs_retry_btn.clicked.connect(self._on_dcs_retry_clicked)
@@ -845,7 +865,8 @@ class MainWindow(QMainWindow):
     # ── Hardware event handlers ──────────────────────────────────────────────
 
     def _auto_connect_hardware(self) -> None:
-        self._hw.connect_dcs_async(DEFAULT_DCS_IP, DEFAULT_DCS_PORT)
+        ip = self._dcs_ip_edit.text().strip() if self._dcs_ip_edit else DEFAULT_DCS_IP
+        self._hw.connect_dcs_async(ip or DEFAULT_DCS_IP, DEFAULT_DCS_PORT)
         self._hw.connect_dlp_async()
         self._start_arduino_auto_detect()
 
@@ -944,16 +965,58 @@ class MainWindow(QMainWindow):
     def _on_led_slider_changed(self, value: int) -> None:
         self._hw.set_led_percent(float(value))
 
+    def _on_dcs_scan_clicked(self) -> None:
+        if self._dcs_scan_btn:
+            self._dcs_scan_btn.setEnabled(False)
+        if self._dcs_retry_btn:
+            self._dcs_retry_btn.setEnabled(False)
+        if self._dcs_status_label:
+            self._dcs_status_label.setText("● Scanning network...")
+            self._dcs_status_label.setStyleSheet(
+                f"font-size:{px(11)}px; font-weight:700; color:#b07020;"
+            )
+        self.add_event_line("DCS: scanning local network...")
+        self._hw.scan_dcs_async()
+
     def _on_dcs_retry_clicked(self) -> None:
+        ip = self._dcs_ip_edit.text().strip() if self._dcs_ip_edit else DEFAULT_DCS_IP
+        if not ip:
+            ip = DEFAULT_DCS_IP
         self._dcs_retry_btn.setEnabled(False)
         self._dcs_status_label.setText("● Connecting...")
         self._dcs_status_label.setStyleSheet(
             f"font-size:{px(11)}px; font-weight:700; color:#b07020;"
         )
-        self.add_event_line(f"DCS reconnecting → {DEFAULT_DCS_IP}:{DEFAULT_DCS_PORT} ...")
-        self._hw.connect_dcs_async(DEFAULT_DCS_IP, DEFAULT_DCS_PORT)
+        self.add_event_line(f"DCS reconnecting → {ip}:{DEFAULT_DCS_PORT} ...")
+        self._hw.connect_dcs_async(ip, DEFAULT_DCS_PORT)
 
     def _on_dcs_connected(self, success: bool, message: str) -> None:
+        if message.startswith("SCAN_RESULT:"):
+            ip = message.removeprefix("SCAN_RESULT:")
+            if self._dcs_scan_btn:
+                self._dcs_scan_btn.setEnabled(True)
+            if ip:
+                if self._dcs_ip_edit:
+                    self._dcs_ip_edit.setText(ip)
+                self.add_event_line(f"DCS found at {ip} — press Retry to connect")
+                if self._dcs_status_label:
+                    self._dcs_status_label.setText(f"● Found: {ip}")
+                    self._dcs_status_label.setStyleSheet(
+                        f"font-size:{px(11)}px; font-weight:700; color:#2878c8;"
+                    )
+                if self._dcs_retry_btn:
+                    self._dcs_retry_btn.setEnabled(True)
+            else:
+                self.add_event_line("DCS: no device found on local network")
+                if self._dcs_status_label:
+                    self._dcs_status_label.setText("● Not found")
+                    self._dcs_status_label.setStyleSheet(
+                        f"font-size:{px(11)}px; font-weight:700; color:#c0392b;"
+                    )
+                if self._dcs_retry_btn:
+                    self._dcs_retry_btn.setEnabled(True)
+            return
+
         if success:
             self._dcs_status_label.setText("● Connected")
             self._dcs_status_label.setStyleSheet(
