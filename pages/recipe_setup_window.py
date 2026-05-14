@@ -95,6 +95,12 @@ class RecipeSetupDialog(QDialog):
         self._set_action_cards_enabled(False)
         self._refresh_recipe_management_status()
 
+    def keyPressEvent(self, event) -> None:
+        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+            event.ignore()
+            return
+        super().keyPressEvent(event)
+
     # ── UI construction ────────────────────────────────────────────────────────
     def _build_ui(self) -> None:
         self.setStyleSheet(
@@ -162,6 +168,8 @@ class RecipeSetupDialog(QDialog):
         footer.addStretch(1)
         cancel_btn = QPushButton("Cancel")
         apply_btn  = QPushButton("Apply && Close")
+        cancel_btn.setAutoDefault(False)
+        apply_btn.setAutoDefault(False)
         cancel_btn.clicked.connect(self.reject)
         apply_btn.clicked.connect(self._apply_and_accept)
         footer.addWidget(cancel_btn)
@@ -292,6 +300,10 @@ class RecipeSetupDialog(QDialog):
         save_btn = QPushButton("💾 Save Recipe")
         new_btn  = QPushButton("➕ New Recipe")
 
+        load_btn.setAutoDefault(False)
+        save_btn.setAutoDefault(False)
+        new_btn.setAutoDefault(False)
+
         load_btn.setStyleSheet(_LOAD_BTN_STYLE)
         save_btn.setStyleSheet(_SAVE_BTN_STYLE)
         new_btn.setStyleSheet(_NEW_BTN_STYLE)
@@ -337,6 +349,7 @@ class RecipeSetupDialog(QDialog):
         btn_row = QHBoxLayout()
         btn_row.setSpacing(px(6))
         add_btn = QPushButton("Add step")
+        add_btn.setAutoDefault(False)
         add_btn.clicked.connect(
             lambda _=False, t=table, s=stage_key: self._add_step(t, s)
         )

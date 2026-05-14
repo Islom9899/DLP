@@ -45,6 +45,7 @@ from app.data_models import RecipeData, ReagentSlot, StepItem
 from app.recipe_file_manager import default_reagent_slots, default_recipe
 from app.command_helpers import (
     CommandGenerator,
+    is_arduino_command,
     is_incubation_action,
     is_pattern_action,
     is_phosphoramidite_group_action,
@@ -57,6 +58,7 @@ from pages.recipe_setup_window import RecipeSetupDialog
 
 SOURCE_MASK_EXTENSION = ".png"
 DLP_MASK_EXTENSION = ".bmp"
+ARDUINO_RESCAN_INTERVAL_MS = 5000
 
 
 class MainWindow(QMainWindow):
@@ -84,6 +86,7 @@ class MainWindow(QMainWindow):
 
         self.is_running = False
         self.hold_infinite = False
+        self._waiting_arduino = False
         self.current_stage = "idle"
         self.current_step_index = 0
         self.sequence_index = 1
@@ -103,11 +106,15 @@ class MainWindow(QMainWindow):
         self._hw.dcs_connected.connect(self._on_dcs_connected)
         self._hw.dlp_connected.connect(self._on_dlp_connected)
         self._hw.dlp_upload_done.connect(self._on_dlp_upload_done)
+        self._hw.arduino_connected.connect(self._on_arduino_connected)
+        self._hw.arduino_command_done.connect(self._on_arduino_command_done)
 
         self._dcs_status_label: Optional[QLabel] = None
         self._dlp_status_label: Optional[QLabel] = None
         self._dlp_retry_btn: Optional[QPushButton] = None
         self._dcs_retry_btn: Optional[QPushButton] = None
+        self._arduino_status_label: Optional[QLabel] = None
+        self._arduino_connect_btn: Optional[QPushButton] = None
 
         self.step_timer = QTimer(self)
         self.step_timer.setSingleShot(True)
@@ -125,6 +132,12 @@ class MainWindow(QMainWindow):
         self.blink_timer = QTimer(self)
         self.blink_timer.setInterval(300)
         self.blink_timer.timeout.connect(self._on_blink_tick)
+
+        self._arduino_scan_in_progress = False
+        self._arduino_scan_attempt = 0
+        self.arduino_rescan_timer = QTimer(self)
+        self.arduino_rescan_timer.setInterval(ARDUINO_RESCAN_INTERVAL_MS)
+        self.arduino_rescan_timer.timeout.connect(self._on_arduino_rescan_timer)
 
         self.run_started_monotonic = 0.0
         self.elapsed_seconds = 0
@@ -412,6 +425,18 @@ class MainWindow(QMainWindow):
         dlp_row, self._dlp_status_label, self._dlp_retry_btn = _hw_row("● Connecting...")
         self._dlp_retry_btn.clicked.connect(self._on_dlp_retry_clicked)
         panel.root.addLayout(dlp_row)
+
+        panel.root.addSpacing(px(8))
+
+        # ── Arduino connection ────────────────────────────────────
+        arduino_title = QLabel("ARDUINO CONTROLLER")
+        arduino_title.setStyleSheet(_section_style)
+        panel.root.addWidget(arduino_title)
+
+        arduino_row, self._arduino_status_label, self._arduino_connect_btn = _hw_row("● Scanning...")
+        self._arduino_connect_btn.setText("Retry")
+        self._arduino_connect_btn.clicked.connect(self._on_arduino_retry_clicked)
+        panel.root.addLayout(arduino_row)
 
         panel.root.addSpacing(px(8))
 
@@ -822,6 +847,99 @@ class MainWindow(QMainWindow):
     def _auto_connect_hardware(self) -> None:
         self._hw.connect_dcs_async(DEFAULT_DCS_IP, DEFAULT_DCS_PORT)
         self._hw.connect_dlp_async()
+        self._start_arduino_auto_detect()
+
+    def _start_arduino_auto_detect(self, manual: bool = False) -> None:
+        if self._hw.arduino_is_connected or self._arduino_scan_in_progress:
+            return
+        self._arduino_scan_in_progress = True
+        self._arduino_scan_attempt += 1
+        self.arduino_rescan_timer.stop()
+        if self._arduino_status_label:
+            self._arduino_status_label.setText("● Scanning ports...")
+            self._arduino_status_label.setStyleSheet(
+                f"font-size:{px(11)}px; font-weight:700; color:#b07020;"
+            )
+        if self._arduino_connect_btn:
+            self._arduino_connect_btn.setEnabled(False)
+        if manual or self._arduino_scan_attempt == 1:
+            self.add_event_line("Arduino: scanning COM ports...")
+        self._hw.auto_connect_arduino_async()
+
+    def _on_arduino_retry_clicked(self) -> None:
+        self._start_arduino_auto_detect(manual=True)
+
+    def _on_arduino_rescan_timer(self) -> None:
+        if self._hw.arduino_is_connected:
+            self.arduino_rescan_timer.stop()
+            return
+        self._start_arduino_auto_detect()
+
+    def _on_arduino_connected(self, success: bool, message: str) -> None:
+        self._arduino_scan_in_progress = False
+        if success:
+            self.arduino_rescan_timer.stop()
+            self._arduino_scan_attempt = 0
+            self._arduino_status_label.setText("● Connected")
+            self._arduino_status_label.setStyleSheet(
+                f"font-size:{px(11)}px; font-weight:700; color:#27ae60;"
+            )
+            self._arduino_connect_btn.setEnabled(False)
+            self._hw.send_arduino_command_async("RVH", timeout_s=30.0)
+        else:
+            self._arduino_status_label.setText("● Not found")
+            self._arduino_status_label.setStyleSheet(
+                f"font-size:{px(11)}px; font-weight:700; color:#c0392b;"
+            )
+            self._arduino_connect_btn.setEnabled(True)
+            self._arduino_status_label.setText("● Auto retrying...")
+            self.arduino_rescan_timer.start()
+        self.add_event_line(message)
+
+    def _on_arduino_command_done(self, success: bool, message: str) -> None:
+        if not self._waiting_arduino:
+            return  # timeout already advanced the step; ignore late DONE
+        self._waiting_arduino = False
+        self.step_timer.stop()
+        if not success:
+            self.add_event_line(f"ALERT Arduino: {message}")
+            self._stop_for_arduino_error()
+            return
+
+        self.add_event_line(f"Arduino RX: {message}")
+        if self.is_running and not self.hold_infinite:
+            self.current_step_index += 1
+            self._execute_next_step()
+
+    def _stop_for_arduino_error(self) -> None:
+        self.is_running = False
+        self.hold_infinite = False
+        self._waiting_arduino = False
+        self.step_timer.stop()
+        self.metrics_timer.stop()
+        self.progress_timer.stop()
+        self.blink_timer.stop()
+        self._hw.stop_dlp_sequence()
+        self._hw.disconnect_arduino()
+        self.big_base_circle.set_active(False)
+        self.big_base_circle.set_progress(0)
+        self.current_step_duration_ms = 0
+
+        for row in self.sequence_rows.values():
+            row.clear_current_base()
+
+        if self.run_started_monotonic > 0:
+            self.elapsed_seconds = int(max(0.0, time.monotonic() - self.run_started_monotonic))
+        self.elapsed_box.set_value(self._format_hms(self.elapsed_seconds))
+
+        self.start_btn.setEnabled(True)
+        self.pause_btn.setEnabled(False)
+        self.stop_btn.setEnabled(False)
+        self.recipe_setup_btn.setEnabled(True)
+        self._set_dlp_controls_enabled(True)
+        self.progress_text.setText("STOPPED - Arduino communication error")
+        self.add_event_line(">>> STOPPED - Arduino communication error")
+        self._start_arduino_auto_detect()
 
     def _on_led_slider_changed(self, value: int) -> None:
         self._hw.set_led_percent(float(value))
@@ -922,6 +1040,7 @@ class MainWindow(QMainWindow):
         self.current_base = BASES[0]
         self.completed_bases = 0
         self.hold_infinite = False
+        self._waiting_arduino = False
         self.elapsed_seconds = 0
         self.run_started_monotonic = 0.0
         self.current_step_duration_ms = 0
@@ -994,7 +1113,7 @@ class MainWindow(QMainWindow):
 
         self.start_btn.setEnabled(True)
         self.pause_btn.setEnabled(False)
-        self.stop_btn.setEnabled(False)
+        self.stop_btn.setEnabled(True)
         self.recipe_setup_btn.setEnabled(True)
         self._set_dlp_controls_enabled(True)
         self.progress_text.setText(
@@ -1003,7 +1122,7 @@ class MainWindow(QMainWindow):
         self.add_event_line(">>> PAUSED")
 
     def stop_process(self) -> None:
-        if not (self.is_running or self.hold_infinite or self.step_timer.isActive() or self.log_dirty):
+        if not (self.is_running or self.hold_infinite or self.step_timer.isActive()):
             return
 
         self.is_running = False
@@ -1031,7 +1150,6 @@ class MainWindow(QMainWindow):
         self.progress_text.setText("STOPPED")
 
         self.add_event_line(">>> STOPPED")
-        self._prompt_save_log()
 
     def _finish_process(self) -> None:
         self.is_running = False
@@ -1065,7 +1183,6 @@ class MainWindow(QMainWindow):
         self.progress_text.setText("SYNTHESIS COMPLETED")
 
         self.add_event_line(">>> SYNTHESIS COMPLETED")
-        self._prompt_save_log()
 
     def _update_progress_text_running(self) -> None:
         self.progress_text.setText(
@@ -1158,11 +1275,13 @@ class MainWindow(QMainWindow):
         phosphoramidite_slot_no = (
             self.base_index + 1 if is_phosphoramidite_group_action(step.action) else None
         )
-        command = CommandGenerator.generate(
+        generated_command = CommandGenerator.generate(
             step,
             self.recipe.pattern_base_times.get(self.current_base, 3500),
             phosphoramidite_slot_no=phosphoramidite_slot_no,
         )
+        command = step.command.strip() if step.command.strip() else generated_command
+        command = CommandGenerator.normalize_arduino_command(command)
         self.add_event_line(command)
 
         duration_seconds = self._resolve_step_duration_seconds(step)
@@ -1179,7 +1298,21 @@ class MainWindow(QMainWindow):
         self.current_step_duration_ms = max(1, int(duration_seconds * 1000))
         self.big_base_circle.set_active(self.is_running, self._blink_state)
         self.big_base_circle.set_progress(0)
-        self.step_timer.start(self.current_step_duration_ms)
+
+        requires_arduino = is_arduino_command(command)
+        if self._hw.arduino_is_connected and requires_arduino:
+            self._waiting_arduino = True
+            timeout_s = duration_seconds * 2 + 10
+            self.add_event_line(f"Arduino TX: {command}")
+            self._hw.send_arduino_command_async(command, timeout_s=timeout_s)
+            self.step_timer.start(int(timeout_s * 1000))
+        else:
+            self._waiting_arduino = False
+            if requires_arduino:
+                self.add_event_line(f"ALERT Arduino not connected - command skipped: {command}")
+                self._start_arduino_auto_detect()
+            self.step_timer.start(self.current_step_duration_ms)
+
         self._update_big_base_progress()
         self._update_progress_text_running()
         self._update_time_metrics()
@@ -1187,6 +1320,9 @@ class MainWindow(QMainWindow):
     def _on_step_timeout(self) -> None:
         if not self.is_running or self.hold_infinite:
             return
+        if self._waiting_arduino:
+            self._waiting_arduino = False
+            self.add_event_line("ALERT Arduino timeout — forcing next step")
         self.current_step_index += 1
         self._execute_next_step()
 
@@ -1337,11 +1473,21 @@ class MainWindow(QMainWindow):
         self.hold_infinite = False
         self.step_timer.stop()
         self.metrics_timer.stop()
+        self.arduino_rescan_timer.stop()
         self._hw.stop_camera_preview()
         self._hw.disconnect_camera()
         self._hw.stop_dlp_sequence()
         self._hw.disconnect_dcs()
         self._hw.disconnect_dlp()
+        self._hw.disconnect_arduino()
         if self.log_dirty and self.event_log_lines:
-            self._prompt_save_log()
+            answer = QMessageBox.question(
+                self,
+                "Unsaved Log",
+                "Log data has not been saved. Save before closing?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes,
+            )
+            if answer == QMessageBox.Yes:
+                self._prompt_save_log()
         event.accept()

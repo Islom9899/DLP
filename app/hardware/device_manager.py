@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 import os
 import threading
+import time
 from typing import Dict, List, Optional
 
 import numpy as np
@@ -11,6 +12,7 @@ from PIL import Image
 
 from PySide6.QtCore import QObject, Signal
 
+from app.hardware.arduino_controller import ArduinoController
 from app.hardware.basler_camera import BaslerCameraController
 from app.hardware.led_controller import DCSController
 from app.hardware.dlp_projector_driver import dlp6500
@@ -39,6 +41,8 @@ class HardwareManager(QObject):
     dcs_connected = Signal(bool, str)
     dlp_connected = Signal(bool, str)
     dlp_upload_done = Signal(bool, str)
+    arduino_connected = Signal(bool, str)
+    arduino_command_done = Signal(bool, str)
     camera_devices_found = Signal(object, str)
     camera_connected = Signal(bool, str)
     camera_preview_state = Signal(bool, str)
@@ -54,6 +58,7 @@ class HardwareManager(QObject):
         self._dcs: Optional[DCSController] = None
         self._dlp: Optional[dlp6500] = None
         self._camera = BaslerCameraController()
+        self._arduino = ArduinoController()
         self._camera_devices: List[Dict[str, object]] = []
         self._lock = threading.Lock()
 
@@ -72,8 +77,51 @@ class HardwareManager(QObject):
         return self._camera.is_connected
 
     @property
+    def arduino_is_connected(self) -> bool:
+        return self._arduino.is_connected
+
+    @property
+    def arduino_port(self) -> str:
+        return self._arduino.port
+
+    @property
     def camera_devices(self) -> List[Dict[str, object]]:
         return list(self._camera_devices)
+
+    # ── Arduino ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def list_arduino_ports() -> List[str]:
+        return ArduinoController.list_ports()
+
+    def auto_connect_arduino_async(self) -> None:
+        def _run():
+            port, detect_msg = self._arduino.auto_detect()
+            if port is None:
+                self.arduino_connected.emit(False, detect_msg)
+                return
+            time.sleep(0.5)  # ensure OS fully releases the port after auto_detect
+            ok, connect_msg = self._arduino.connect(port)
+            self.arduino_connected.emit(ok, connect_msg)
+
+        threading.Thread(target=_run, daemon=True).start()
+
+    def connect_arduino_async(self, port: str) -> None:
+        def _run():
+            ok, msg = self._arduino.connect(port)
+            self.arduino_connected.emit(ok, msg)
+
+        threading.Thread(target=_run, daemon=True).start()
+
+    def disconnect_arduino(self) -> None:
+        self._arduino.disconnect()
+
+    def send_arduino_command_async(self, command: str, timeout_s: float = 120.0) -> None:
+        def _run():
+            ok, msg = self._arduino.send_and_wait(command, timeout_s)
+            self.arduino_command_done.emit(ok, msg)
+
+        threading.Thread(target=_run, daemon=True).start()
 
     # ── DCS ─────────────────────────────────────────────────────────────────
 

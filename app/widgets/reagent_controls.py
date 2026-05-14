@@ -976,17 +976,21 @@ class ProtocolTable(QTableWidget):
                 new_time = old_time
             step.time_sec = new_time
 
+        # Inline Time(s) edits make time the source of truth; rebuild command
+        # from action + time instead of keeping a stale manual command.
+        step.command = ""
         self._updating = True
         item.setText(self._time_display_text(step.time_sec))
         self._style_time_item(item, step.time_sec)
-        if not step.command:
-            cmd_item = self.item(row, self._COL_COMMAND)
-            if cmd_item is not None:
-                cmd_item.setText(self._compute_command_text(step))
+        cmd_item = self.item(row, self._COL_COMMAND)
+        if cmd_item is not None:
+            cmd_item.setText(self._compute_command_text(step))
+            self._style_command_item(cmd_item, False)
         self._updating = False
 
         self.steps_changed.emit()
         self.selected_step_changed.emit(StepItem(step.step_no, step.action, step.time_sec, step.command))
+        self.clearSelection()
 
     def _compute_command_text(self, step: StepItem) -> str:
         return CommandGenerator.generate(step, self._dlp_exposure_ms)

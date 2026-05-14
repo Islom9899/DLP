@@ -1,0 +1,396 @@
+[17:29:44] >>> SYNTHESIS STARTED
+[17:29:44] DLP upload starting (all patterns)...
+[17:29:51] DLP upload: DLP upload complete
+[17:29:51] Rv1;w1;P1on;w1;P1off;
+[17:29:51] Arduino TX: Rv1;w1;P1on;w1;P1off;
+[17:29:53] Arduino RX: Done: RX: Rv1;w1;P1on;w1;P1off; | [RVM] Port 1 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:29:53] w1;
+[17:29:53] Arduino TX: w1;
+[17:29:54] Arduino RX: Done: RX: w1; | [W1s]
+[17:29:54] Rv1;w1;P1on;w1;P1off;
+[17:29:54] Arduino TX: Rv1;w1;P1on;w1;P1off;
+[17:29:56] Arduino RX: Done: RX: Rv1;w1;P1on;w1;P1off; | [RVM] Port 1 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:29:56] Rv5;w1;P1on;w1;P1off;
+[17:29:56] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:29:58] Arduino RX: Done: RX: Rv5;w1;P1on;w1;P1off; | [RVM] Port 5 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:29:58] P2on;w1;P2off;
+[17:29:58] Arduino TX: P2on;w1;P2off;
+[17:29:59] Arduino RX: Done: RX: P2on;w1;P2off; | [P2] ON | [W1s] | [P2] OFF
+[17:29:59] Rv6;w1;P1on;w1;P1off;
+[17:29:59] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:01] Arduino RX: Done: RX: Rv6;w1;P1on;w1;P1off; | [RVM] Port 6 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:01] DLP_EXPOSURE
+[17:30:02] P2on;w1;P2off;
+[17:30:02] Arduino TX: P2on;w1;P2off;
+[17:30:03] Arduino RX: Done: RX: P2on;w1;P2off; | [P2] ON | [W1s] | [P2] OFF
+[17:30:03] Rv9;w1;P1on;w1;P1off;
+[17:30:03] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:05] Arduino RX: Done: RX: Rv9;w1;P1on;w1;P1off; | [RVM] Port 9 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:05] Rv10;w1;P1on;w1;P1off;
+[17:30:05] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:08] Arduino RX: Done: RX: Rv10;w1;P1on;w1;P1off; | [RVM] Port 10 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:08] Rv2;w1;P1on;w1;P1off;
+[17:30:08] Arduino TX: Rv2;w1;P1on;w1;P1off;
+[17:30:10] Arduino RX: Done: RX: Rv2;w1;P1on;w1;P1off; | [RVM] Port 2 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:10] Rv5;w1;P1on;w1;P1off;
+[17:30:10] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:12] Arduino RX: Done: RX: Rv5;w1;P1on;w1;P1off; | [RVM] Port 5 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:12] P2on;w1;P2off;
+[17:30:12] Arduino TX: P2on;w1;P2off;
+[17:30:13] Arduino RX: Done: RX: P2on;w1;P2off; | [P2] ON | [W1s] | [P2] OFF
+[17:30:13] Rv6;w1;P1on;w1;P1off;
+[17:30:13] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:15] Arduino RX: Done: RX: Rv6;w1;P1on;w1;P1off; | [RVM] Port 6 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:15] DLP_EXPOSURE
+[17:30:16] P2on;w1;P2off;
+[17:30:16] Arduino TX: P2on;w1;P2off;
+[17:30:17] Arduino RX: Done: RX: P2on;w1;P2off; | [P2] ON | [W1s] | [P2] OFF
+[17:30:17] Rv9;w1;P1on;w1;P1off;
+[17:30:17] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:19] Arduino RX: Done: RX: Rv9;w1;P1on;w1;P1off; | [RVM] Port 9 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:19] Rv10;w1;P1on;w1;P1off;
+[17:30:19] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:21] Arduino RX: Done: RX: Rv10;w1;P1on;w1;P1off; | [RVM] Port 10 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:21] Rv3;w1;P1on;w1;P1off;
+[17:30:21] Arduino TX: Rv3;w1;P1on;w1;P1off;
+[17:30:23] Arduino RX: Done: RX: Rv3;w1;P1on;w1;P1off; | [RVM] Port 3 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:23] Rv5;w1;P1on;w1;P1off;
+[17:30:23] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:25] Arduino RX: Done: RX: Rv5;w1;P1on;w1;P1off; | [RVM] Port 5 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:25] P2on;w1;P2off;
+[17:30:25] Arduino TX: P2on;w1;P2off;
+[17:30:26] Arduino RX: Done: RX: P2on;w1;P2off; | [P2] ON | [W1s] | [P2] OFF
+[17:30:27] Rv6;w1;P1on;w1;P1off;
+[17:30:27] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:29] Arduino RX: Done: RX: Rv6;w1;P1on;w1;P1off; | [RVM] Port 6 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:29] DLP_EXPOSURE
+[17:30:30] P2on;w1;P2off;
+[17:30:30] Arduino TX: P2on;w1;P2off;
+[17:30:31] Arduino RX: Done: RX: P2on;w1;P2off; | [P2] ON | [W1s] | [P2] OFF
+[17:30:31] Rv9;w1;P1on;w1;P1off;
+[17:30:31] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:33] Arduino RX: Done: RX: Rv9;w1;P1on;w1;P1off; | [RVM] Port 9 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:33] Rv10;w1;P1on;w1;P1off;
+[17:30:33] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:35] Arduino RX: Done: RX: Rv10;w1;P1on;w1;P1off; | [RVM] Port 10 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:35] Rv4;w1;P1on;w1;P1off;
+[17:30:35] Arduino TX: Rv4;w1;P1on;w1;P1off;
+[17:30:37] Arduino RX: Done: RX: Rv4;w1;P1on;w1;P1off; | [RVM] Port 4 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:37] Rv5;w1;P1on;w1;P1off;
+[17:30:37] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:39] Arduino RX: Done: RX: Rv5;w1;P1on;w1;P1off; | [RVM] Port 5 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:39] P2on;w1;P2off;
+[17:30:39] Arduino TX: P2on;w1;P2off;
+[17:30:40] Arduino RX: Done: RX: P2on;w1;P2off; | [P2] ON | [W1s] | [P2] OFF
+[17:30:40] Rv6;w1;P1on;w1;P1off;
+[17:30:40] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:42] Arduino RX: Done: RX: Rv6;w1;P1on;w1;P1off; | [RVM] Port 6 | [W1s] | [P1] ON | [W1s] | [P1] OFF
+[17:30:42] DLP_EXPOSURE
+[17:30:43] P2on;w1;P2off;
+[17:30:43] Arduino TX: P2on;w1;P2off;
+[17:30:44] Arduino RX: Done: RX: P2on;w1;P2off; | [P2] ON | [W1s] | [P2] OFF
+[17:30:44] Rv9;w1;P1on;w1;P1off;
+[17:30:44] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:44] ALERT Arduino: Arduino write error: Write timeout
+[17:30:44] Rv10;w1;P1on;w1;P1off;
+[17:30:44] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:44] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:44] Rv1;w1;P1on;w1;P1off;
+[17:30:44] Arduino TX: Rv1;w1;P1on;w1;P1off;
+[17:30:45] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:45] Rv5;w1;P1on;w1;P1off;
+[17:30:45] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:45] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:45] P2on;w1;P2off;
+[17:30:45] Arduino TX: P2on;w1;P2off;
+[17:30:45] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:45] Rv6;w1;P1on;w1;P1off;
+[17:30:45] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:45] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:45] DLP_EXPOSURE
+[17:30:46] P2on;w1;P2off;
+[17:30:46] Arduino TX: P2on;w1;P2off;
+[17:30:46] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:46] Rv9;w1;P1on;w1;P1off;
+[17:30:46] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:46] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:46] Rv10;w1;P1on;w1;P1off;
+[17:30:46] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:46] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:46] Rv2;w1;P1on;w1;P1off;
+[17:30:46] Arduino TX: Rv2;w1;P1on;w1;P1off;
+[17:30:46] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:46] Rv5;w1;P1on;w1;P1off;
+[17:30:46] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:46] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:46] P2on;w1;P2off;
+[17:30:46] Arduino TX: P2on;w1;P2off;
+[17:30:46] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:46] Rv6;w1;P1on;w1;P1off;
+[17:30:46] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:46] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:46] DLP_EXPOSURE
+[17:30:47] P2on;w1;P2off;
+[17:30:47] Arduino TX: P2on;w1;P2off;
+[17:30:47] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:47] Rv9;w1;P1on;w1;P1off;
+[17:30:47] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:47] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:47] Rv10;w1;P1on;w1;P1off;
+[17:30:47] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:47] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:47] Rv3;w1;P1on;w1;P1off;
+[17:30:47] Arduino TX: Rv3;w1;P1on;w1;P1off;
+[17:30:47] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:47] Rv5;w1;P1on;w1;P1off;
+[17:30:47] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:47] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:47] P2on;w1;P2off;
+[17:30:47] Arduino TX: P2on;w1;P2off;
+[17:30:47] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:47] Rv6;w1;P1on;w1;P1off;
+[17:30:47] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:47] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:47] DLP_EXPOSURE
+[17:30:48] P2on;w1;P2off;
+[17:30:48] Arduino TX: P2on;w1;P2off;
+[17:30:48] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:48] Rv9;w1;P1on;w1;P1off;
+[17:30:48] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:48] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:48] Rv10;w1;P1on;w1;P1off;
+[17:30:48] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:49] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:49] Rv4;w1;P1on;w1;P1off;
+[17:30:49] Arduino TX: Rv4;w1;P1on;w1;P1off;
+[17:30:49] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:49] Rv5;w1;P1on;w1;P1off;
+[17:30:49] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:49] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:49] P2on;w1;P2off;
+[17:30:49] Arduino TX: P2on;w1;P2off;
+[17:30:49] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:49] Rv6;w1;P1on;w1;P1off;
+[17:30:49] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:49] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:49] DLP_EXPOSURE
+[17:30:50] P2on;w1;P2off;
+[17:30:50] Arduino TX: P2on;w1;P2off;
+[17:30:50] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:50] Rv9;w1;P1on;w1;P1off;
+[17:30:50] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:50] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:50] Rv10;w1;P1on;w1;P1off;
+[17:30:50] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:50] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:50] Rv1;w1;P1on;w1;P1off;
+[17:30:50] Arduino TX: Rv1;w1;P1on;w1;P1off;
+[17:30:50] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:50] Rv5;w1;P1on;w1;P1off;
+[17:30:50] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:50] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:50] P2on;w1;P2off;
+[17:30:50] Arduino TX: P2on;w1;P2off;
+[17:30:50] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:50] Rv6;w1;P1on;w1;P1off;
+[17:30:50] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:50] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:50] DLP_EXPOSURE
+[17:30:51] P2on;w1;P2off;
+[17:30:51] Arduino TX: P2on;w1;P2off;
+[17:30:51] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:51] Rv9;w1;P1on;w1;P1off;
+[17:30:51] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:51] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:51] Rv10;w1;P1on;w1;P1off;
+[17:30:51] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:51] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:51] Rv2;w1;P1on;w1;P1off;
+[17:30:51] Arduino TX: Rv2;w1;P1on;w1;P1off;
+[17:30:51] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:51] Rv5;w1;P1on;w1;P1off;
+[17:30:51] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:51] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:51] P2on;w1;P2off;
+[17:30:51] Arduino TX: P2on;w1;P2off;
+[17:30:51] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:51] Rv6;w1;P1on;w1;P1off;
+[17:30:51] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:52] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:52] DLP_EXPOSURE
+[17:30:53] P2on;w1;P2off;
+[17:30:53] Arduino TX: P2on;w1;P2off;
+[17:30:53] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:53] Rv9;w1;P1on;w1;P1off;
+[17:30:53] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:53] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:53] Rv10;w1;P1on;w1;P1off;
+[17:30:53] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:53] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:53] Rv3;w1;P1on;w1;P1off;
+[17:30:53] Arduino TX: Rv3;w1;P1on;w1;P1off;
+[17:30:53] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:53] Rv5;w1;P1on;w1;P1off;
+[17:30:53] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:53] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:54] P2on;w1;P2off;
+[17:30:54] Arduino TX: P2on;w1;P2off;
+[17:30:54] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:54] Rv6;w1;P1on;w1;P1off;
+[17:30:54] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:54] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:54] DLP_EXPOSURE
+[17:30:55] P2on;w1;P2off;
+[17:30:55] Arduino TX: P2on;w1;P2off;
+[17:30:55] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:55] Rv9;w1;P1on;w1;P1off;
+[17:30:55] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:55] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:55] Rv10;w1;P1on;w1;P1off;
+[17:30:55] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:55] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:55] Rv4;w1;P1on;w1;P1off;
+[17:30:55] Arduino TX: Rv4;w1;P1on;w1;P1off;
+[17:30:55] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:55] Rv5;w1;P1on;w1;P1off;
+[17:30:55] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:55] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:55] P2on;w1;P2off;
+[17:30:55] Arduino TX: P2on;w1;P2off;
+[17:30:55] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:55] Rv6;w1;P1on;w1;P1off;
+[17:30:55] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:55] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:55] DLP_EXPOSURE
+[17:30:56] P2on;w1;P2off;
+[17:30:56] Arduino TX: P2on;w1;P2off;
+[17:30:56] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:56] Rv9;w1;P1on;w1;P1off;
+[17:30:56] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:56] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:56] Rv10;w1;P1on;w1;P1off;
+[17:30:56] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:56] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:56] Rv1;w1;P1on;w1;P1off;
+[17:30:56] Arduino TX: Rv1;w1;P1on;w1;P1off;
+[17:30:56] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:56] Rv5;w1;P1on;w1;P1off;
+[17:30:56] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:57] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:57] P2on;w1;P2off;
+[17:30:57] Arduino TX: P2on;w1;P2off;
+[17:30:57] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:57] Rv6;w1;P1on;w1;P1off;
+[17:30:57] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:57] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:57] DLP_EXPOSURE
+[17:30:58] P2on;w1;P2off;
+[17:30:58] Arduino TX: P2on;w1;P2off;
+[17:30:58] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:58] Rv9;w1;P1on;w1;P1off;
+[17:30:58] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:58] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:58] Rv10;w1;P1on;w1;P1off;
+[17:30:58] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:58] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:58] Rv2;w1;P1on;w1;P1off;
+[17:30:58] Arduino TX: Rv2;w1;P1on;w1;P1off;
+[17:30:58] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:58] Rv5;w1;P1on;w1;P1off;
+[17:30:58] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:30:58] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:58] P2on;w1;P2off;
+[17:30:58] Arduino TX: P2on;w1;P2off;
+[17:30:58] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:58] Rv6;w1;P1on;w1;P1off;
+[17:30:58] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:30:58] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:58] DLP_EXPOSURE
+[17:30:59] P2on;w1;P2off;
+[17:30:59] Arduino TX: P2on;w1;P2off;
+[17:30:59] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:59] Rv9;w1;P1on;w1;P1off;
+[17:30:59] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:30:59] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:30:59] Rv10;w1;P1on;w1;P1off;
+[17:30:59] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:30:59] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:00] Rv3;w1;P1on;w1;P1off;
+[17:31:00] Arduino TX: Rv3;w1;P1on;w1;P1off;
+[17:31:00] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:00] Rv5;w1;P1on;w1;P1off;
+[17:31:00] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:31:00] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:00] P2on;w1;P2off;
+[17:31:00] Arduino TX: P2on;w1;P2off;
+[17:31:00] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:00] Rv6;w1;P1on;w1;P1off;
+[17:31:00] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:31:00] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:00] DLP_EXPOSURE
+[17:31:01] P2on;w1;P2off;
+[17:31:01] Arduino TX: P2on;w1;P2off;
+[17:31:01] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:01] Rv9;w1;P1on;w1;P1off;
+[17:31:01] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:31:01] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:01] Rv10;w1;P1on;w1;P1off;
+[17:31:01] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:31:01] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:01] Rv4;w1;P1on;w1;P1off;
+[17:31:01] Arduino TX: Rv4;w1;P1on;w1;P1off;
+[17:31:01] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:01] Rv5;w1;P1on;w1;P1off;
+[17:31:01] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:31:01] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:01] P2on;w1;P2off;
+[17:31:01] Arduino TX: P2on;w1;P2off;
+[17:31:01] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:01] Rv6;w1;P1on;w1;P1off;
+[17:31:01] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:31:01] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:01] DLP_EXPOSURE
+[17:31:02] P2on;w1;P2off;
+[17:31:02] Arduino TX: P2on;w1;P2off;
+[17:31:02] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:02] Rv9;w1;P1on;w1;P1off;
+[17:31:03] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:31:03] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:03] Rv10;w1;P1on;w1;P1off;
+[17:31:03] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:31:03] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:03] Rv1;w1;P1on;w1;P1off;
+[17:31:03] Arduino TX: Rv1;w1;P1on;w1;P1off;
+[17:31:03] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:03] Rv5;w1;P1on;w1;P1off;
+[17:31:03] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:31:03] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:03] P2on;w1;P2off;
+[17:31:03] Arduino TX: P2on;w1;P2off;
+[17:31:03] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:03] Rv6;w1;P1on;w1;P1off;
+[17:31:03] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:31:03] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:03] DLP_EXPOSURE
+[17:31:04] P2on;w1;P2off;
+[17:31:04] Arduino TX: P2on;w1;P2off;
+[17:31:04] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:04] Rv9;w1;P1on;w1;P1off;
+[17:31:04] Arduino TX: Rv9;w1;P1on;w1;P1off;
+[17:31:04] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:04] Rv10;w1;P1on;w1;P1off;
+[17:31:04] Arduino TX: Rv10;w1;P1on;w1;P1off;
+[17:31:04] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:04] Rv2;w1;P1on;w1;P1off;
+[17:31:04] Arduino TX: Rv2;w1;P1on;w1;P1off;
+[17:31:04] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:04] Rv5;w1;P1on;w1;P1off;
+[17:31:04] Arduino TX: Rv5;w1;P1on;w1;P1off;
+[17:31:04] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:04] P2on;w1;P2off;
+[17:31:04] Arduino TX: P2on;w1;P2off;
+[17:31:05] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:05] Rv6;w1;P1on;w1;P1off;
+[17:31:05] Arduino TX: Rv6;w1;P1on;w1;P1off;
+[17:31:05] ALERT Arduino: Arduino write error: WriteFile failed (PermissionError(13, '액세스가 거부되었습니다.', None, 5))
+[17:31:05] DLP_EXPOSURE

@@ -52,6 +52,28 @@ def is_drain_action(action: str) -> bool:
     return "drain" in (action or "").lower()
 
 
+_ARDUINO_TOKEN_RE = re.compile(
+    r"^(?:"
+    r"RV(?:H|Q|R\s+.+|(?:[1-9]|1[0-2]))|"
+    r"P(?:1|2)(?:ON|OFF|V\d{1,3}|F\d{1,2})|"
+    r"ALLON|ALLOFF|PSTATUS|"
+    r"DPON|DPOFF|LEDON|LEDOFF|"
+    r"H|WP|II|IO|POS|ES|STOP|!|\?|"
+    r"[XYZ][+-]|"
+    r"W\d{1,2}|M\d{1,2}"
+    r")$",
+    flags=re.IGNORECASE,
+)
+
+
+def is_arduino_command(command: str) -> bool:
+    """Return True if the command contains at least one Arduino protocol token."""
+    tokens = [tok.strip() for tok in (command or "").split(";")]
+    if any(tok.upper().startswith("UNKNOWN(") for tok in tokens if tok):
+        return False
+    return any(_ARDUINO_TOKEN_RE.match(tok) for tok in tokens if tok)
+
+
 def is_incubation_action(action: str) -> bool:
     return "incubation" in (action or "").lower()
 
@@ -60,6 +82,47 @@ class CommandGenerator:
     """Convert protocol steps into simulated Arduino command strings."""
 
     _TIME_RE = re.compile(r"^\s*(\d+)\s*(ms|s|m)?\s*$", flags=re.IGNORECASE)
+
+    @staticmethod
+    def wait_tokens(seconds: int) -> list[str]:
+        """Return Arduino wait tokens, respecting firmware W0..W99/M0..M99 limits."""
+        remaining = max(0, int(seconds))
+        if remaining == 0:
+            return ["w0"]
+
+        tokens: list[str] = []
+        minutes, seconds_part = divmod(remaining, 60)
+        while minutes > 0:
+            chunk = min(minutes, 99)
+            tokens.append(f"m{chunk}")
+            minutes -= chunk
+        if seconds_part > 0:
+            tokens.append(f"w{seconds_part}")
+        return tokens
+
+    @staticmethod
+    def normalize_arduino_command(command: str) -> str:
+        """Normalize waits like w600 into m10 so the Arduino sketch can execute them."""
+        normalized: list[str] = []
+        converted_wait = False
+        for raw_token in (command or "").split(";"):
+            token = raw_token.strip()
+            if not token:
+                continue
+            match = re.fullmatch(r"([wW])(\d+)", token)
+            if match:
+                normalized.extend(CommandGenerator.wait_tokens(int(match.group(2))))
+                converted_wait = True
+                continue
+            normalized.append(token)
+        if not normalized:
+            return ""
+        suffix = ";" if command.strip().endswith(";") or converted_wait or len(normalized) > 1 else ""
+        return ";".join(normalized) + suffix
+
+    @staticmethod
+    def _join_tokens(tokens: list[str]) -> str:
+        return ";".join(tokens) + ";"
 
     @staticmethod
     def parse_time_to_seconds(value: str, dlp_exposure_ms: int = 0) -> Optional[int]:
@@ -137,16 +200,22 @@ class CommandGenerator:
 
         if is_phosphoramidite_group_action(action):
             slot_no = phosphoramidite_slot_no if phosphoramidite_slot_no in {1, 2, 3, 4} else 1
-            return f"Rv{slot_no};w1;P1on;w{seconds};P1off;"
+            return CommandGenerator._join_tokens(
+                [f"Rv{slot_no}", "w1", "P1on", f"w{seconds}", "P1off"]
+            )
 
         slot_no = parse_reagent_slot(action)
         if slot_no is not None:
-            return f"Rv{slot_no};w1;P1on;w{seconds};P1off;"
+            return CommandGenerator._join_tokens(
+                [f"Rv{slot_no}", "w1", "P1on", f"w{seconds}", "P1off"]
+            )
 
         if is_drain_action(action):
-            return f"P2on;w{seconds};P2off;"
+            return CommandGenerator._join_tokens(
+                ["P2on", f"w{seconds}", "P2off"]
+            )
 
         if is_incubation_action(action):
-            return f"w{seconds}"
+            return f"w{seconds};"
 
         return f"UNKNOWN({action});w{seconds};"
