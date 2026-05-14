@@ -30,6 +30,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from app.app_paths import get as _get_path, save as _save_path
 from app.app_settings import (
     BASES,
     DLP_TIME_MARKER,
@@ -778,12 +779,16 @@ class MainWindow(QMainWindow):
             if warn_if_empty:
                 QMessageBox.information(self, "Save Log", "No log entries to save.")
             return
-        default_name = f"log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        default_name = os.path.join(
+            _get_path("save_log_dir"),
+            f"log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+        )
         path, _ = QFileDialog.getSaveFileName(
             self, "Save Log Data", default_name, "Text files (*.txt);;All Files (*)"
         )
         if not path:
             return
+        _save_path("save_log_dir", path)
         try:
             with open(path, "w", encoding="utf-8") as handle:
                 handle.write("\n".join(self.event_log_lines) + "\n")
@@ -793,9 +798,12 @@ class MainWindow(QMainWindow):
         self.log_dirty = False
 
     def pick_pattern_folder(self) -> None:
-        path = QFileDialog.getExistingDirectory(self, "Select Pattern Folder")
+        path = QFileDialog.getExistingDirectory(
+            self, "Select Pattern Folder", _get_path("pattern_folder")
+        )
         if not path:
             return
+        _save_path("pattern_folder", path)
         self.pattern_folder_path = path
         self.pattern_folder_edit.setText(path)
         self._update_pattern_label()

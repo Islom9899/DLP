@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from app.app_paths import get as _get_path, save as _save_path
 from app.app_settings import LED_MAX, LED_MIN, px
 from app.widgets.common_ui import Panel
 
@@ -588,11 +589,12 @@ class DlpDialog(QDialog):
         path, _ = QFileDialog.getOpenFileName(
             self,
             "Select Test Image",
-            "",
+            _get_path("test_image_dir"),
             "Images (*.png *.bmp *.jpg *.jpeg *.tif *.tiff);;All Files (*)",
         )
         if not path:
             return
+        _save_path("test_image_dir", path)
         self._image_path = path
         self.file_name_label.setText(os.path.basename(path))
         pixmap = QPixmap(path)
@@ -665,12 +667,14 @@ class DlpDialog(QDialog):
             self.status_label.setText("Status: No image to save")
             self.status_label.setStyleSheet(f"font-size:{px(12)}px; font-weight:700; color:#a44747;")
             return
+        default_name = os.path.join(_get_path("save_image_dir"), "captured.png")
         path, _ = QFileDialog.getSaveFileName(
-            self, "Save Image", "captured.png",
+            self, "Save Image", default_name or "captured.png",
             "PNG (*.png);;BMP (*.bmp);;JPEG (*.jpg *.jpeg);;All Files (*)"
         )
         if not path:
             return
+        _save_path("save_image_dir", path)
         if self._current_pixmap.save(path):
             self.status_label.setText(f"Status: Saved — {os.path.basename(path)}")
             self.status_label.setStyleSheet(f"font-size:{px(12)}px; font-weight:700; color:#2f7c4e;")
