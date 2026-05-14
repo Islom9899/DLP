@@ -963,7 +963,7 @@ class MainWindow(QMainWindow):
         self._start_arduino_auto_detect()
 
     def _on_led_slider_changed(self, value: int) -> None:
-        self._hw.set_led_percent(float(value))
+        pass
 
     def _on_dcs_scan_clicked(self) -> None:
         if self._dcs_scan_btn:
@@ -1023,7 +1023,6 @@ class MainWindow(QMainWindow):
                 f"font-size:{px(11)}px; font-weight:700; color:#27ae60;"
             )
             self._dcs_retry_btn.setEnabled(False)
-            self._on_led_slider_changed(self.led_slider.value())
         else:
             self._dcs_status_label.setText("● Not found")
             self._dcs_status_label.setStyleSheet(
@@ -1130,6 +1129,7 @@ class MainWindow(QMainWindow):
             suffix = f" ... +{len(missing) - 8} more" if len(missing) > 8 else ""
             self.add_event_line(f"ALERT Missing pattern files before start: {preview}{suffix}")
 
+        self._hw.set_led_percent(0)
         self.is_running = True
         self.start_btn.setEnabled(False)
         self.pause_btn.setEnabled(True)
@@ -1191,6 +1191,7 @@ class MainWindow(QMainWindow):
         self.is_running = False
         self.hold_infinite = False
         self._hw.stop_dlp_sequence()
+        self._hw.set_led_percent(0)
         self.step_timer.stop()
         self.metrics_timer.stop()
         self.progress_timer.stop()
@@ -1218,6 +1219,7 @@ class MainWindow(QMainWindow):
         self.is_running = False
         self.hold_infinite = False
         self._hw.stop_dlp_sequence()
+        self._hw.set_led_percent(0)
         self.step_timer.stop()
         self.metrics_timer.stop()
         self.progress_timer.stop()
@@ -1361,6 +1363,11 @@ class MainWindow(QMainWindow):
         self.current_step_duration_ms = max(1, int(duration_seconds * 1000))
         self.big_base_circle.set_active(self.is_running, self._blink_state)
         self.big_base_circle.set_progress(0)
+
+        if is_pattern_action(step.action):
+            self._hw.set_led_percent(float(self.led_slider.value()))
+        else:
+            self._hw.set_led_percent(0)
 
         requires_arduino = is_arduino_command(command)
         if self._hw.arduino_is_connected and requires_arduino:

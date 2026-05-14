@@ -396,7 +396,6 @@ class DlpDialog(QDialog):
         self._hw.dlp_upload_done.connect(self._on_dlp_project_done)
 
     def _initialize_camera_ui(self) -> None:
-        self._hw.set_led_percent(float(self.optics_slider.value()))
         self._populate_camera_devices(self._hw.camera_devices)
         self._set_camera_controls_enabled(self._hw.camera_is_connected)
         if self._hw.camera_is_connected:
@@ -621,7 +620,6 @@ class DlpDialog(QDialog):
 
     def _on_optics_slider_changed(self, value: int) -> None:
         self.optics_value_label.setText(f"{value}%")
-        self._hw.set_led_percent(float(value))
 
     def _project_image(self) -> None:
         if self._current_pixmap is None:
@@ -658,6 +656,7 @@ class DlpDialog(QDialog):
                 self._hw._dlp.start_stop_sequence("stop")
             except Exception:
                 pass
+        self._hw.set_led_percent(0)
         self.status_label.setText("Status: Idle")
         self.status_label.setStyleSheet(f"font-size:{px(12)}px; font-weight:700; color:#2f4960;")
 
