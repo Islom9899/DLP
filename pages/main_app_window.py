@@ -704,9 +704,20 @@ class MainWindow(QMainWindow):
         if not self.pattern_folder_path:
             self.pattern_label.setText("Pattern folder not loaded")
             return
-        self.pattern_label.setText(
-            f"Pattern: {self._pattern_file_name(self.current_sequence, self.current_base)}"
-        )
+        if self.is_running or self.hold_infinite:
+            self.pattern_label.setText(
+                f"Pattern: {self._pattern_file_name(self.current_sequence, self.current_base)}"
+            )
+        else:
+            expected = self._expected_pattern_names()
+            found = sum(
+                1 for name in expected
+                if os.path.exists(os.path.join(self.pattern_folder_path, name))
+            )
+            folder_name = os.path.basename(self.pattern_folder_path)
+            self.pattern_label.setText(
+                f"Folder: {folder_name}  ({found}/{len(expected)} patterns ready)"
+            )
 
     def _on_base_chip_clicked(self, base: str) -> None:
         if self.is_running:
